@@ -1,4 +1,4 @@
-# Fish Feeder Tester
+# Fish Feeder
 
 This project controls a fish feeder device via I2C communication and servo control on a Raspberry Pi 4.
 
@@ -17,19 +17,25 @@ This project controls a fish feeder device via I2C communication and servo contr
    # Navigate to Interface Options > I2C > Enable
    ```
 
-2. Clone this repository:
+2. Add your user to the gpio group to allow GPIO access without sudo:
+   ```bash
+   sudo usermod -a -G gpio $USER
+   # You'll need to log out and back in for this to take effect
+   ```
+
+3. Clone this repository:
    ```bash
    git clone <your-repository-url>
    cd FishFeeder-Tester
    ```
 
-3. Make the setup script executable and run it:
+4. Make the setup script executable and run it:
    ```bash
    chmod +x setup.sh
    ./setup.sh
    ```
 
-4. Activate the virtual environment:
+5. Activate the virtual environment:
    ```bash
    source venv/bin/activate
    ```
@@ -44,6 +50,8 @@ python main.py
 The script will:
 1. Cycle through the feeder ports via I2C, activating each one for 1 second with a 1-second delay between activations
 2. Control the servo motor through a sequence of positions (0° → 90° → 180° → 90°)
+
+The relay board is based on https://wiki.52pi.com/index.php?title=EP-0099.
 
 To stop the program, press Ctrl+C.
 
