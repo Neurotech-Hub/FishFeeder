@@ -2,6 +2,7 @@ import time
 import datetime
 import sys
 import smbus
+import RPi.GPIO as GPIO
 
 # I2C Configuration
 DEVICE_BUS = 1
@@ -13,6 +14,9 @@ PUMP_AIR = 1          # Continuous air pump
 SOLENOID_WATER_IN = 2 # Water inlet solenoid
 PUMP_WATER_IN = 3     # Water inlet pump
 PUMP_WATER_OUT = 4    # Water outlet pump
+
+# Servo Configuration
+SERVO_PIN = 18  # GPIO18 (Pin 12) for servo control
 
 # Timing Configuration (all values in seconds)
 TIMING = {
@@ -34,15 +38,18 @@ class FishFeeder:
         self.day = None
         self.current_time = None
         self.status = None
+        
+        # Initialize servo
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(SERVO_PIN, GPIO.OUT)
+        self.servo = GPIO.PWM(SERVO_PIN, 50)  # 50Hz frequency
+        self.servo.start(0)  # Start with 0% duty cycle
 
     def set_servo_angle(self, angle):
-        """
-        Placeholder for servo control - to be implemented and tested
-        angle: 0-180 degrees
-        """
-        # TODO: Implement actual servo control
-        print(f"Setting servo to {angle} degrees")
-        time.sleep(0.02)  # Simulated movement time
+        """Convert angle to duty cycle and set servo position"""
+        duty = angle / 18 + 2  # Convert angle to duty cycle
+        self.servo.ChangeDutyCycle(duty)
+        time.sleep(0.5)  # Allow time for servo to reach position
 
     def device_control(self, device, state):
         """Control I2C devices: 0x00 for OFF, 0xFF for ON"""
@@ -168,6 +175,10 @@ class FishFeeder:
         self.device_control(PUMP_WATER_OUT, False)
         self.device_control(PUMP_AIR, False)
         self.device_control(SOLENOID_WATER_IN, False)
+        
+        # Cleanup servo
+        self.servo.stop()
+        GPIO.cleanup()
 
         print(f"{self.day} {self.current_time} {self.status}")
 
