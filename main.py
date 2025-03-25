@@ -20,6 +20,7 @@ SERVO_PIN = 18  # GPIO18 (Pin 12) for servo control
 
 # Timing Configuration (all values in seconds)
 TIMING = {
+    'FEEDER_REPEAT': 1,      # Number of times to cycle the feeder pattern
     'PRIME_WATER_IN_CYCLES': 15,
     'PRIME_WATER_OUT_CYCLES': 5,
     'PUMP_ON_TIME': 0.5,
@@ -84,10 +85,11 @@ class FishFeeder:
     def prepare(self):
         """Prepare food and initial water"""
         # Dispense food
-        self.set_servo_angle(0)
-        self.set_servo_angle(90)
-        self.set_servo_angle(180)
-        self.set_servo_angle(90)
+        for _ in range(TIMING['FEEDER_REPEAT']):
+            self.set_servo_angle(0)
+            self.set_servo_angle(90)
+            self.set_servo_angle(180)
+            self.set_servo_angle(90)
 
         # Initial water fill
         for _ in range(10):
