@@ -87,9 +87,7 @@ class FishFeeder:
         # Dispense food
         for _ in range(TIMING['FEEDER_REPEAT']):
             self.set_servo_angle(0)
-            self.set_servo_angle(90)
             self.set_servo_angle(180)
-            self.set_servo_angle(90)
 
         # Initial water fill
         for _ in range(10):
